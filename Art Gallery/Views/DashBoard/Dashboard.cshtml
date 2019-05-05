@@ -1,4 +1,4 @@
-﻿
+
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -112,29 +112,32 @@
         <div class="row">
             <div class="swiper-container swiper-four-slides white-move height-100 width-100 hover-option3">
                 <div class="swiper-wrapper">
-                    @foreach (Art a in likes)
+                    @if (likes != null)
                     {
-                        <!-- start slide item -->
-                        <div class="swiper-slide cover-background full-screen grid-item text-left" style="background-image:url(@a.Link);">
-                            <div class="slide-hover-box">
-                                <div class="opacity-medium bg-black bg-black"></div>
-                                <figure class="position-absolute">
-                                    <figcaption>
-                                        <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @a.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@a.Title</h6></a>
-                                        <p class="text-white width-85 sm-width-100">@a.Creator</p>
-                                        <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
-                                    </figcaption>
-                                </figure>
+                        foreach (Art a in likes)
+                        {
+                            <!-- start slide item -->
+                            <div class="swiper-slide cover-background full-screen grid-item text-left" style="background-image:url(@a.Link);">
+                                <div class="slide-hover-box">
+                                    <div class="opacity-medium bg-black bg-black"></div>
+                                    <figure class="position-absolute">
+                                        <figcaption>
+                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @a.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@a.Title</h6></a>
+                                            <p class="text-white width-85 sm-width-100">@a.Creator</p>
+                                            <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
+                                        </figcaption>
+                                    </figure>
+                                </div>
                             </div>
-                        </div>
-                        <!-- end slide item -->
+                            <!-- end slide item -->
+                        }
+                        <!-- start slider pagination -->
+                        <div class="swiper-pagination swiper-pagination-four-slides swiper-pagination-white"></div>
+                        <div class="swiper-button-next swiper-button-black-highlight display-none"></div>
+                        <div class="swiper-button-prev swiper-button-black-highlight display-none"></div>
+                        <!-- end slider pagination -->
                     }
                 </div>
-                <!-- start slider pagination -->
-                <div class="swiper-pagination swiper-pagination-four-slides swiper-pagination-white"></div>
-                <div class="swiper-button-next swiper-button-black-highlight display-none"></div>
-                <div class="swiper-button-prev swiper-button-black-highlight display-none"></div>
-                <!-- end slider pagination -->
             </div>
         </div>
     </div>
@@ -164,29 +167,32 @@
         <div class="row">
             <div class="swiper-container swiper-four-slides white-move height-100 width-100 hover-option3">
                 <div class="swiper-wrapper">
-                    @foreach (Art b in sale)
+                    @if (sale != null)
                     {
-                        <!-- start slide item -->
-                        <div class="swiper-slide cover-background full-screen grid-item text-left" style="background-image:url(@b.Link);">
-                            <div class="slide-hover-box">
-                                <div class="opacity-medium bg-black bg-black"></div>
-                                <figure class="position-absolute">
-                                    <figcaption>
-                                        <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @b.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@b.Title</h6></a>
-                                        <p class="text-white width-85 sm-width-100">@b.Creator</p>
-                                        <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
-                                    </figcaption>
-                                </figure>
+                        foreach (Art b in sale)
+                        {
+                            <!-- start slide item -->
+                            <div class="swiper-slide cover-background full-screen grid-item text-left" style="background-image:url(@b.Link);">
+                                <div class="slide-hover-box">
+                                    <div class="opacity-medium bg-black bg-black"></div>
+                                    <figure class="position-absolute">
+                                        <figcaption>
+                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @b.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@b.Title</h6></a>
+                                            <p class="text-white width-85 sm-width-100">@b.Creator</p>
+                                            <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
+                                        </figcaption>
+                                    </figure>
+                                </div>
                             </div>
-                        </div>
-                        <!-- end slide item -->
+                            <!-- end slide item -->
+                        }
+                        <!-- start slider pagination -->
+                        <div class="swiper-pagination swiper-pagination-four-slides swiper-pagination-white"></div>
+                        <div class="swiper-button-next swiper-button-black-highlight display-none"></div>
+                        <div class="swiper-button-prev swiper-button-black-highlight display-none"></div>
+                        <!-- end slider pagination -->
                     }
                 </div>
-                <!-- start slider pagination -->
-                <div class="swiper-pagination swiper-pagination-four-slides swiper-pagination-white"></div>
-                <div class="swiper-button-next swiper-button-black-highlight display-none"></div>
-                <div class="swiper-button-prev swiper-button-black-highlight display-none"></div>
-                <!-- end slider pagination -->
             </div>
         </div>
     </div>
@@ -216,29 +222,32 @@
         <div class="row">
             <div class="swiper-container swiper-four-slides white-move height-100 width-100 hover-option3">
                 <div class="swiper-wrapper">
-                    @foreach (Art c in pur)
+                    @if (pur != null)
                     {
-                        <!-- start slide item -->
-                        <div class="swiper-slide cover-background full-screen grid-item text-left" style="background-image:url(@c.Link);">
-                            <div class="slide-hover-box">
-                                <div class="opacity-medium bg-black bg-black"></div>
-                                <figure class="position-absolute">
-                                    <figcaption>
-                                        <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @c.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@c.Title</h6></a>
-                                        <p class="text-white width-85 sm-width-100">@c.Creator</p>
-                                        <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
-                                    </figcaption>
-                                </figure>
+                        foreach (Art c in pur)
+                        {
+                            <!-- start slide item -->
+                            <div class="swiper-slide cover-background full-screen grid-item text-left" style="background-image:url(@c.Link);">
+                                <div class="slide-hover-box">
+                                    <div class="opacity-medium bg-black bg-black"></div>
+                                    <figure class="position-absolute">
+                                        <figcaption>
+                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @c.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@c.Title</h6></a>
+                                            <p class="text-white width-85 sm-width-100">@c.Creator</p>
+                                            <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
+                                        </figcaption>
+                                    </figure>
+                                </div>
                             </div>
-                        </div>
-                        <!-- end slide item -->
+                            <!-- end slide item -->
+                        }
+                        <!-- start slider pagination -->
+                        <div class="swiper-pagination swiper-pagination-four-slides swiper-pagination-white"></div>
+                        <div class="swiper-button-next swiper-button-black-highlight display-none"></div>
+                        <div class="swiper-button-prev swiper-button-black-highlight display-none"></div>
+                        <!-- end slider pagination -->
                     }
                 </div>
-                <!-- start slider pagination -->
-                <div class="swiper-pagination swiper-pagination-four-slides swiper-pagination-white"></div>
-                <div class="swiper-button-next swiper-button-black-highlight display-none"></div>
-                <div class="swiper-button-prev swiper-button-black-highlight display-none"></div>
-                <!-- end slider pagination -->
             </div>
         </div>
     </div>
