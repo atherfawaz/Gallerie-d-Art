@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@using Art_Gallery.Models;
+
+@model List<Art>
+@{ 
+    int i = 1;
+}
+
+<!-- start slider section -->
+<section class="no-padding full-screen">
+    <div class="swiper-container swiper-vertical-pagination swiper-container-vertical no-transition">
+        <div class="swiper-wrapper">
+
+            @foreach (Art a in Model)
+            {
+                <!-- start slide item -->
+                string stt = a.Link.ToString();
+                <div class="swiper-slide cover-background" style="background-image: url(@stt)">
+                    <div class="full-screen width-100 position-relative">
+                        <div class="slider-typography text-left">
+                            <div class="slider-text-middle-main">
+                                <div class="slider-text-bottom padding-100px-lr xs-padding-30px-lr">
+                                    <div class="swiper-bottom-content bg-deep-pink width-500px padding-80px-all margin-50px-left sm-no-margin-left xs-width-90 xs-padding-20px-all">
+                                        <h4 class="xs-margin-5px-bottom"><a href="single-project-page-01.html" class="font-weight-600 text-white alt-font text-white-hover">@a.Title</a></h4>
+                                        <span class="alt-font text-uppercase text-small text-extra-dark-gray font-weight-600">@a.Creator</span>
+                                         <!--<div class="box-arrow"><a href="~/Home/RandomArtwork"><img src="../Content/images/homepage-option19-arrow-bg.jpg" alt=""></a></div> -->
+                                        <div class="box-arrow"><a href='@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = i })'><img src="../Content/images/homepage-option19-arrow-bg.jpg" alt=""></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                i = i + 1;
+                <!-- end slide item -->
+            }
+        </div>
+        <!-- start slider pagination -->
+        <div class="swiper-pagination swiper-pagination-vertical swiper-pagination-white"></div>
+        <!-- end slider pagination -->
+    </div>
+</section>
+<!-- end slider section -->
+<!-- start scroll to top -->
+<a class="scroll-top-arrow" href="javascript:void(0);"><i class="ti-arrow-up"></i></a>
+<!-- end scroll to top  -->

@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "LoginRegister";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model System.Data.SqlClient.SqlDataReader
+@{
+    System.Data.SqlClient.SqlDataReader reader = Model;
+}
+
+<script>
+    function validateRegisterForm() {
+        var x = document.forms["registerform"]["fname"].value;
+        if (x == "") {
+            alert("First name must be filled out");
+            return false;
+        }
+        if (!("/^[a-zA-Z ]{2,30}$/".test(x))) {
+            alert("Please enter a valid first name");
+            return false;
+        }
+
+        x = document.forms["registerform"]["lname"].value;
+        if (x == "") {
+            alert("Last name must be filled out");
+            return false;
+        }
+        if (!("/^[a-zA-Z ]{2,30}$/".test(x))) {
+            alert("Please enter a valid last name");
+            return false;
+        }
+
+        x = document.forms["registerform"]["email"].value;
+        if (x == "") {
+            alert("Email must be filled out");
+            return false;
+        }
+        var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!re.test(String(x).toLowerCase())) {
+            alert("Please enter a valid email");
+            return false;
+        }
+
+        x = document.forms["registerform"]["password"].value;
+        if (x == "" || !("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@@#\$%\^&\*])(?=.{8,})".test(x))) {
+            alert("Please choose a valid password composed of minimum 8 characters, atleast 1 uppercase, 1 lowercase, 1 special character and 1 numeric value");
+            return false;
+        }
+        alert("All fields are correct, registeration checks work!");
+        return true;
+    }
+
+    function validateLoginForm() {
+        var x = document.forms["loginform"]["email"].value;
+        if (x == "") {
+            alert("Email must be filled out");
+            return false;
+        }
+        var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!re.test(String(x).toLowerCase())) {
+            alert("Please enter a valid email");
+            return false;
+        }
+
+        var x = document.forms["loginform"]["password"].value;
+        if (x == "" || !("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@@#\$%\^&\*])(?=.{8,})".test(x))) {
+            alert("Please choose a valid password composed of minimum characters, atleast 1 uppercase, 1 lowercase, 1 special character and 1 numeric value");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<!-- start page title section -->
+<section class="wow fadeIn parallax" data-stellar-background-ratio="0.5" style="background-image:url('../Content/images/paintings/train.jpg');">
+    <div class="opacity-medium bg-extra-dark-gray"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 extra-small-screen display-table page-title-large">
+                <div class="display-table-cell vertical-align-middle text-center">
+                    <!-- start page title -->
+                    <h1 class="text-white alt-font font-weight-600 letter-spacing-minus-1 margin-10px-bottom">Galerie d'art</h1>
+                    <!-- end page title -->
+                    <!-- start sub title -->
+                    <span class="text-white opacity6 alt-font no-margin-bottom">Login / Register</span>
+                    <!-- end sub title -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end page title section -->
+<!-- start button style 04 section -->
+<section class="wow fadeIn bg-extra-dark-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-sm-12 col-xs-12 center-col text-center margin-100px-bottom xs-margin-20px-bottom xs-margin-20px-top">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 center-col text-center btn-dual">
+                <!-- start buttons -->
+                <button class="btn btn-extra-large btn-transparent-white md-margin-15px-bottom sm-display-table sm-margin-lr-auto"
+                        onclick="document.getElementById('loginmask').style.display = 'block';
+                        document.getElementById('registermask').style.display = 'none'">
+                    Login
+                </button>
+                <button class="btn btn-extra-large btn-transparent-white md-margin-15px-bottom sm-display-table sm-margin-lr-auto"
+                        onclick="document.getElementById('registermask').style.display = 'block';
+                        document.getElementById('loginmask').style.display = 'none'">
+                    Register
+                </button>
+                <!-- end buttons -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end button style 04 section -->
+
+
+<style>
+    #registermask {
+        display: none
+    }
+
+    #loginmask {
+        display: none
+    }
+</style>
+
+<!-- start register section -->
+<div id="registermask">
+    <section class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-sm-12 col-xs-12 center-col text-center margin-100px-bottom xs-margin-40px-bottom">
+                </div>
+            </div>
+            <form name="registerform" id="contact-form-2" onsubmit="return validateRegisterForm()" action="/LoginRegister/Add_User" method="post">
+                <div class="row">
+                    <div class="col-md-8 wow fadeIn center-col text-center">
+                        <div id="success-contact-form-2" class="no-margin-lr"></div>
+                        <input type="text" name="fname" id="fname" placeholder="First Name*" class="input-border-bottom">
+                        <input type="text" name="lname" id="lname" placeholder="Last Name*" class="input-border-bottom">
+                        <select name="gender" id="gender" placeholder="Gender*" class="input-border-bottom">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <input type="date" name="dob" id="dob" placeholder="Date of Birth*" class="input-border-bottom">
+                        <input type="email" name="email" id="email" placeholder="E-mail*" class="input-border-bottom">
+                        <input type="password" name="password" id="password" placeholder="Password*" class="input-border-bottom">
+                        <select name="acc_type" id="acc_type" placeholder="Admin or User?*" class="input-border-bottom">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                        </select>
+                        <input type="text" name="address" id="address" placeholder="Address" class="input-border-bottom">
+                        <button id="contact-us-button-2" type="submit" class="btn btn-small btn-deep-pink margin-30px-top xs-margin-three-top">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<!-- end register section -->
+<!-- start login section -->
+<div id="loginmask">
+    <section class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-sm-12 col-xs-12 center-col text-center margin-100px-bottom xs-margin-40px-bottom">
+                </div>
+            </div>
+            <form name="loginform" id="contact-form-2" onsubmit="return validateLoginForm()" action="/LoginRegister/login_User" method="post">
+                <div class="row">
+                    <div class="col-md-8 wow fadeIn center-col text-center">
+                        <div id="success-contact-form-2" class="no-margin-lr"></div>
+                        <input type="text" name="email" id="email" placeholder="E-mail*" class="input-border-bottom">
+                        <input type="password" name="password" id="password" placeholder="Password*" class="input-border-bottom">
+                        <button id="contact-us-button-2" type="submit" class="btn btn-small btn-deep-pink margin-30px-top xs-margin-three-top">Login</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<!-- end login section -->

@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "Submit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    function validateForm() {
+        var x = document.forms["submitform"]["name"].value;
+        if (x == "") {
+            alert("Title cannot be empty!");
+            return false;
+        }
+        x = document.forms["submitform"]["creator"].value;
+        if (x == "") {
+            alert("Creator cannot be empty!");
+            return false;
+        }
+
+        x = document.forms["submitform"]["origin"].value;
+        if (x == "") {
+            alert("Origin cannot be empty!");
+            return false;
+        }
+
+        x = document.forms["submitform"]["medium"].value;
+        if (x == "") {
+            alert("Medium cannot be empty!");
+            return false;
+        }
+
+        x = document.forms["submitform"]["date"].value;
+        if (x == "") {
+            alert("Date cannot be empty!");
+            return false;
+        }
+
+        x = document.forms["submitform"]["description"].value;
+        if (x == "") {
+            alert("Description cannot be empty!");
+            return false;
+        }
+
+        x = document.forms["submitform"]["price"].value;
+        if (x == "") {
+            alert("Price cannot be empty!");
+            return false;
+        }
+
+        x = document.forms["submitform"]["picture"].value;
+        if (x == "") {
+            alert("Picture link cannot be empty!");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<!-- start page title section -->
+<section class="wow fadeIn parallax" data-stellar-background-ratio="0.5" style="background-image:url('../Content/images/paintings/first.jpg');">
+    <div class="opacity-medium bg-extra-dark-gray"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 extra-small-screen display-table page-title-large">
+                <div class="display-table-cell vertical-align-middle text-center">
+                    <!-- start page title -->
+                    <h1 class="text-white alt-font font-weight-600 letter-spacing-minus-1 margin-10px-bottom">Submit Artwork</h1>
+                    <!-- end page title -->
+                    <!-- start sub title -->
+                    <span class="text-white opacity6 alt-font no-margin-bottom">Galerie d'Art</span>
+                    <!-- end sub title -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end page title section -->
+
+<!-- start form style 02 section -->
+<section class="wow fadeIn bg-extra-dark-gray">
+    <div class="container">
+        <form name="submitform" id="" onsubmit="return validateForm()" action="/Submit/sell_art" method="post">
+            <div class="row">
+                <div class="col-md-8 wow fadeIn center-col text-center">
+                    <div id="success-contact-form-2" class="no-margin-lr"></div>
+                    <input type="text" name="name" id="name" placeholder="Title*" class="input-border-bottom">
+                    <input type="text" name="creator" id="creator" placeholder="Creator*" class="input-border-bottom">
+                    <input type="text" id="origin" name="origin" placeholder="Origin*" class="input-border-bottom">
+                    <input type="text" id="medium" name="medium" placeholder="Medium*" class="input-border-bottom">
+                    <input type="date" id="date" name="date" placeholder="Date*" class="input-border-bottom">
+                    <textarea name="description" id="description" placeholder="Description*" class="input-border-bottom"></textarea>
+                    <input type="number" id="price" name="price" placeholder="Price(USD) *" class="input-border-bottom">
+                    <input type="text" id="picture" name="picture" placeholder="Picture Link*" class="input-border-bottom">
+                    <button id="contact-us-button-2" type="submit" class="btn btn-small btn-deep-pink margin-30px-top xs-margin-three-top">Submit Artwork</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<!-- end form style 02 section -->

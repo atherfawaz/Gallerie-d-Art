@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "Purchase";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Art_Gallery.Models;
+
+@{
+    var temp = Model.obj;
+    var identifier = Model.identifier;
+    var commercialprice = 0;
+}
+
+@foreach (Art a in temp)
+{
+    <!-- start about section -->
+    <section id="down-section" class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 sm-margin-50px-bottom  xs-margin-30px-bottom wow fadeInLeft">
+                    <h2 class="alt-font font-weight-700 letter-spacing-minus-2 text-white margin-5px-bottom">@a.Title</h2>
+                    <h6 class="alt-font font-weight-300">@a.Creator</h6>
+                    <p class="margin-35px-bottom display-block">@a.Description</p>
+                </div>
+                <div class="col-md-4 col-md-offset-2 wow fadeInRight">
+                    <ul class="list-style-9 margin-twelve-left">
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Creator</span>@a.Creator</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Medium</span>@a.Medium</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Origin</span>@a.Origin</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Date</span>@a.Date</li>
+                        @{ var pp = "$ " + a.Price.ToString();}
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Price</span>@pp</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end about section -->
+    <!-- start parallax section -->
+    <section class="wow fadeIn no-padding parallax one-fifth-screen sm-height-500px xs-height-350px background-position-x-50" data-stellar-background-ratio="0.4" style="background-image: url('@a.Link')">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"></div>
+            </div>
+        </div>
+    </section>
+    <!-- end parallax section -->
+    <!-- start pricing section -->
+    <section class="wow fadeIn">
+        <div class="container">
+            <div class="row">
+                <div class="pricing-box-style1">
+                    <!-- start pricing item -->
+                    <div class="col-md-4 col-sm-12 col-xs-12 text-center sm-margin-30px-bottom wow fadeInUp">
+                        <div class="pricing-box border-all border-width-1 border-color-extra-light-gray">
+                            <div class="padding-55px-all bg-very-light-gray sm-padding-30px-all xs-padding-40px-all">
+                                <!-- start pricing title -->
+                                <div class="pricing-title text-center">
+                                    <i class="ti-user icon-large text-deep-pink display-inline-block padding-30px-all bg-white box-shadow-light border-radius-100 margin-25px-bottom"></i>
+                                </div>
+                                <!-- end pricing title -->
+                                <!-- start pricing price -->
+                                <div class="pricing-price">
+                                    <span class="alt-font text-extra-dark-gray font-weight-600 text-uppercase">Standard</span>
+                                    @{ var p = a.Price - 10000;
+                                        var ps = "$ " + p.ToString(); }
+                                    <h4 class="text-extra-dark-gray alt-font font-weight-600 no-margin-bottom">@ps</h4>
+                                    <div class="text-extra-small text-uppercase alt-font margin-5px-top">One-time, upfront cost</div>
+                                </div>
+                                <!-- end pricing price -->
+                            </div>
+                            <!-- start pricing features -->
+                            <div class="padding-45px-all pricing-features sm-padding-20px-all xs-padding-30px-all">
+                                <ul class="list-style-11">
+                                    <li>Standard license</li>
+                                    <li>Ownership of the artwork</li>
+                                    <li>Artwork cannot be resold</li>
+                                    <li>Artwork cannot be exhibited in art galleries</li>
+                                    <li>No discounts on other artworks</li>
+                                </ul>
+                                <!-- start pricing action -->
+                                <div class="pricing-action margin-35px-top sm-no-margin-top">
+                                    @{ var st = "Standard";
+                                        var pr = "Confirm " + st;
+                                        var u = @Context.Session[@Context.Session.SessionID.ToString()] as User; }
+                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st, identifier = identifier })" class="btn btn-dark-gray btn-small text-extra-small">@pr</a>
+                                </div>
+                                <!-- end pricing action -->
+                            </div>
+                            <!-- end pricing features -->
+                        </div>
+                    </div>
+                    <!-- end pricing item -->
+                    <!-- start pricing item -->
+                    <div class="col-md-4 col-sm-12 col-xs-12 text-center sm-margin-30px-bottom wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="pricing-box border-all border-width-1 border-color-extra-light-gray">
+                            <div class="padding-55px-all bg-very-light-gray sm-padding-30px-all xs-padding-40px-all">
+                                <!-- start pricing title -->
+                                <div class="pricing-title text-center">
+                                    <i class="ti-briefcase icon-large text-deep-pink display-inline-block padding-30px-all bg-white box-shadow-light border-radius-100 margin-25px-bottom"></i>
+                                </div>
+                                <!-- end pricing title -->
+                                <!-- start pricing price -->
+                                <div class="pricing-price">
+                                    <span class="alt-font text-extra-dark-gray font-weight-600 text-uppercase">Commercial</span>
+                                    @{ var pa = a.Price - 5000;
+                                        var pas = "$ " + pa.ToString(); }
+                                    <h4 class="text-extra-dark-gray alt-font font-weight-600 no-margin-bottom">@pas</h4>
+                                    <div class="text-extra-small text-uppercase alt-font margin-5px-top">Upfront cost + $50 monthly fee</div>
+                                </div>
+                                <!-- end pricing price -->
+                            </div>
+                            <!-- start pricing features -->
+                            <div class="padding-45px-all pricing-features sm-padding-20px-all xs-padding-30px-all">
+                                <ul class="list-style-11">
+                                    <li>Commerical license</li>
+                                    <li>Ownership of the artwork</li>
+                                    <li>Artwork can be resold</li>
+                                    <li>Artwork cannot be exhibited in art galleries</li>
+                                    <li>No discounts on other artworks</li>
+                                </ul>
+                                <!-- start pricing action -->
+                                <div class="pricing-action margin-35px-top sm-no-margin-top">
+                                    @{ var st1 = "Commercial";
+                                        var pr1 = "Confirm " + st1; }
+                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st1 })" class="btn btn-dark-gray btn-small text-extra-small">@pr1</a>
+                                </div>
+                                <!-- end pricing action -->
+                            </div>
+                            <!-- end pricing features -->
+                        </div>
+                    </div>
+                    <!-- end pricing item -->
+                    <!-- start pricing item -->
+                    <div class="col-md-4 col-sm-12 col-xs-12 text-center wow fadeInUp" data-wow-delay="0.4s">
+                        <div class="pricing-box border-all border-width-1 border-color-extra-light-gray">
+                            <div class="padding-55px-all bg-very-light-gray sm-padding-30px-all xs-padding-40px-all">
+                                <!-- start pricing title -->
+                                <div class="pricing-title text-center">
+                                    <i class="ti-world icon-large text-deep-pink display-inline-block padding-30px-all bg-white box-shadow-light border-radius-100 margin-25px-bottom"></i>
+                                </div>
+                                <!-- end pricing title -->
+                                <!-- start pricing price -->
+                                <div class="pricing-price">
+                                    <span class="alt-font text-extra-dark-gray font-weight-600 text-uppercase">Premium</span>
+                                    @{ var p1 = "$ " + a.Price.ToString(); }
+                                    <h4 class="text-extra-dark-gray alt-font font-weight-600 no-margin-bottom">@p1</h4>
+                                    <div class="text-extra-small text-uppercase alt-font margin-5px-top">Upfront cost + $120 monthly fee</div>
+                                </div>
+                                <!-- end pricing price -->
+                            </div>
+                            <!-- start pricing features -->
+                            <div class="padding-45px-all pricing-features sm-padding-20px-all xs-padding-30px-all">
+                                <ul class="list-style-11">
+                                    <li>Premium license</li>
+                                    <li>Ownership of the artwork</li>
+                                    <li>Artwork can be resold</li>
+                                    <li>Artwork can be exhibited in art galleries</li>
+                                    <li>Discounts on other artworks</li>
+                                </ul>
+                                <!-- start pricing action -->
+                                <div class="pricing-action margin-35px-top sm-no-margin-top">
+                                    @{ var st2 = "Premium";
+                                        var pr2 = "Confirm " + st2; }
+                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st1 })" class="btn btn-dark-gray btn-small text-extra-small">@pr2</a>
+                                </div>
+                                <!-- end pricing action -->
+                            </div>
+                            <!-- end pricing features -->
+                        </div>
+                    </div>
+                    <!-- end pricing item -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end pricing section -->
+}

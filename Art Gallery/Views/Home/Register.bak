@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    function validateRegisterForm() {
+        var x = document.forms["myForm"]["fname"].value;
+        if (x == "") {
+            alert("First name must be filled out");
+            return false;
+        }
+        var x = document.forms["myForm"]["lname"].value;
+        if (x == "") {
+            alert("Last name must be filled out");
+            return false;
+        }
+        var x = document.forms["myForm"]["email"].value;
+        if (x == "") {
+            alert("Email must be filled out");
+            return false;
+        }
+        var x = document.forms["myForm"]["password"].value;
+        if (x == "") {
+            alert("Please choose a strong password composed of 7-23 characters");
+            return false;
+        }
+    }
+
+    function validateLoginForm() {
+        var x = document.forms["myForm"]["email"].value;
+        if (x == "") {
+            alert("Email must be filled out");
+            return false;
+        }
+        var x = document.forms["myForm"]["password"].value;
+        if (x == "") {
+            alert("Please choose a strong password composed of 7-23 characters");
+            return false;
+        }
+    }
+</script>
+
+<!-- start page title section -->
+<section class="wow fadeIn parallax" data-stellar-background-ratio="0.5" style="background-image:url('../Content/images/paintings/train.jpg');">
+    <div class="opacity-medium bg-extra-dark-gray"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 extra-small-screen display-table page-title-large">
+                <div class="display-table-cell vertical-align-middle text-center">
+                    <!-- start page title -->
+                    <h1 class="text-white alt-font font-weight-600 letter-spacing-minus-1 margin-10px-bottom">Galerie d'art</h1>
+                    <!-- end page title -->
+                    <!-- start sub title -->
+                    <span class="text-white opacity6 alt-font no-margin-bottom">Login / Register</span>
+                    <!-- end sub title -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end page title section -->
+<!-- start button style 04 section -->
+<section class="wow fadeIn bg-extra-dark-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-sm-12 col-xs-12 center-col text-center margin-100px-bottom xs-margin-20px-bottom xs-margin-20px-top">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 center-col text-center btn-dual">
+                <!-- start buttons -->
+                <button class="btn btn-extra-large btn-transparent-white md-margin-15px-bottom sm-display-table sm-margin-lr-auto" onclick="document.getElementById('loginmask').style.display = 'block'; document.getElementById('registermask').style.display='none'">Login</button>
+                <button class="btn btn-extra-large btn-transparent-white md-margin-15px-bottom sm-display-table sm-margin-lr-auto" onclick="document.getElementById('registermask').style.display = 'block'; document.getElementById('loginmask').style.display='none'">Register</button>
+                <!-- end buttons -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end button style 04 section -->
+
+
+<style>
+    #registermask {
+        display:none
+    }
+
+    #loginmask {
+        display: none
+    }
+</style>
+
+<!-- start register section -->
+<div id="registermask">
+    <section class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-sm-12 col-xs-12 center-col text-center margin-100px-bottom xs-margin-40px-bottom">
+                </div>
+            </div>
+            <form name="myForm" id="contact-form-2" action="javascript:void(0)" onsubmit="return validateRegisterForm()" method="post">
+                <div class="row">
+                    <div class="col-md-8 wow fadeIn center-col text-center">
+                        <div id="success-contact-form-2" class="no-margin-lr"></div>
+                        <input type="text" name="fname" id="fname" placeholder="First Name*" class="input-border-bottom">
+                        <input type="text" name="lname" id="lname" placeholder="Last Name*" class="input-border-bottom">
+                        <input type="text" name="email" id="email" placeholder="E-mail*" class="input-border-bottom">
+                        <input type="password" name="password" id="password" placeholder="Password*" class="input-border-bottom">
+                        <button id="contact-us-button-2" type="submit" class="btn btn-small btn-deep-pink margin-30px-top xs-margin-three-top">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<!-- end register section -->
+
+<!-- start login section -->
+<div id="loginmask">
+    <section class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-sm-12 col-xs-12 center-col text-center margin-100px-bottom xs-margin-40px-bottom">
+                </div>
+            </div>
+            <form name="myForm" id="contact-form-2" action="javascript:void(0)" onsubmit="return validateLoginForm()" method="post">
+                <div class="row">
+                    <div class="col-md-8 wow fadeIn center-col text-center">
+                        <div id="success-contact-form-2" class="no-margin-lr"></div>
+                        <input type="text" name="email" id="email" placeholder="E-mail*" class="input-border-bottom">
+                        <input type="password" name="password" id="password" placeholder="Password*" class="input-border-bottom">
+                        <button id="contact-us-button-2" type="submit" class="btn btn-small btn-deep-pink margin-30px-top xs-margin-three-top">Login</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<!-- end login section -->

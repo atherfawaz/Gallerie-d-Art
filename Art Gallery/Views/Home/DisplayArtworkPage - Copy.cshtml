@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "DisplayArtworkPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Art_Gallery.Models;
+
+@model List<Art>
+@{ 
+    int i = 0;
+}
+@foreach (Art a in Model)
+{
+    string stt = a.Link.ToString();
+    <!-- start parallax section -->
+    <section class="wow fadeIn one-fourth-screen cover-background" style="background-image: url('@a.Link')">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"></div>
+            </div>
+            <div class="down-section text-center"><a href="#down-section" class="inner-link"><i class="ti-arrow-down icon-extra-small text-white bg-deep-pink padding-15px-all xs-padding-10px-all border-radius-100"></i></a></div>
+        </div>
+    </section>
+    <!-- end parallax section -->
+    <!-- start about section -->
+    <section id="down-section" class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 sm-margin-50px-bottom  xs-margin-30px-bottom wow fadeInLeft">
+                    <h2 class="alt-font font-weight-700 letter-spacing-minus-2 text-white margin-5px-bottom">@a.Title</h2>
+                    <h6 class="alt-font font-weight-300">@a.Creator</h6>
+                    <p class="margin-35px-bottom display-block">@a.Description</p>
+                    <a href='@Url.Action("Purchase", "Purchase", new { identifier = i })' class="btn btn-transparent-light-gray btn-small">Buy Now</a>
+                </div>
+                <div class="col-md-4 col-md-offset-2 wow fadeInRight">
+                    <ul class="list-style-9 margin-twelve-left">
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Creator</span>@a.Creator</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Medium</span>@a.Medium</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Origin</span>@a.Origin</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end about section -->
+    <!-- start parallax section -->
+    <section class="wow fadeIn no-padding parallax one-fifth-screen sm-height-500px xs-height-350px background-position-x-50" data-stellar-background-ratio="0.4" style="background-image: url('@a.Link')">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"></div>
+            </div>
+        </div>
+    </section>
+    <!-- end parallax section -->
+    <!-- start blockquote section -->
+    <section class="wow fadeIn big-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 center-col text-center">
+                    <i class="fas fa-quote-left icon-small text-deep-pink display-block margin-25px-bottom"></i>
+                    <h4 class="alt-font text-extra-dark-gray font-weight-600">The true work of art is but a shadow of the divine perfection.</h4>
+                    <span class="text-uppercase text-extra-small alt-font letter-spacing-3 text-medium-gray">Michelangelo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end blockquote section -->
+    <!-- start work section -->
+    <section class="wow fadeIn bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 center-col margin-eight-bottom text-center">
+                    <div class="alt-font text-medium-gray margin-10px-bottom text-uppercase text-small">Related Artworks</div>
+                    <h5 class="alt-font text-extra-dark-gray font-weight-600">Browse through other artworks tailored according to your taste</h5>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid padding-five-lr">
+            <div class="row no-margin">
+                <div class="filter-content overflow-hidden">
+                    <ul class="portfolio-grid work-4col gutter-large hover-option7">
+                        <li class="grid-sizer"></li>
+                        <!-- start portfolio item -->
+                        <li class="grid-item web branding design wow fadeInUp">
+                            <a href="single-project-page-01.html">
+                                <figure>
+                                    <div class="portfolio-img"><img src="http://placehold.it/800x650" alt="" /></div>
+                                    <figcaption>
+                                        <div class="portfolio-hover-main text-center last-paragraph-no-margin">
+                                            <div class="portfolio-hover-box vertical-align-middle">
+                                                <div class="portfolio-hover-content position-relative">
+                                                    <span class="font-weight-600 alt-font text-uppercase margin-one-bottom display-block text-extra-dark-gray">Naked Soap</span>
+                                                    <p class="text-medium-gray text-uppercase text-extra-small">Web and Photography</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </figcaption>
+                                </figure>
+                            </a>
+                        </li>
+                        <!-- end portfolio item -->
+                        <!-- start portfolio item -->
+                        <li class="grid-item design photography wow fadeInUp" data-wow-delay="0.2s">
+                            <a href="single-project-page-02.html">
+                                <figure>
+                                    <div class="portfolio-img"><img src="http://placehold.it/800x650" alt="" /></div>
+                                    <figcaption>
+                                        <div class="portfolio-hover-main text-center last-paragraph-no-margin">
+                                            <div class="portfolio-hover-box vertical-align-middle">
+                                                <div class="portfolio-hover-content position-relative">
+                                                    <span class="font-weight-600 alt-font text-uppercase margin-one-bottom display-block text-extra-dark-gray">Berlin Design</span>
+                                                    <p class="text-medium-gray text-uppercase text-extra-small">Branding and Brochure</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </figcaption>
+                                </figure>
+                            </a>
+                        </li>
+                        <!-- end portfolio item -->
+                        <!-- start portfolio item -->
+                        <li class="grid-item web branding design photography wow fadeInUp" data-wow-delay="0.4s">
+                            <a href="single-project-page-03.html">
+                                <figure>
+                                    <div class="portfolio-img"><img src="http://placehold.it/800x650" alt="" /></div>
+                                    <figcaption>
+                                        <div class="portfolio-hover-main text-center last-paragraph-no-margin">
+                                            <div class="portfolio-hover-box vertical-align-middle">
+                                                <div class="portfolio-hover-content position-relative">
+                                                    <span class="font-weight-600 alt-font text-uppercase margin-one-bottom display-block text-extra-dark-gray">Abstract Comics</span>
+                                                    <p class="text-medium-gray text-uppercase text-extra-small">Branding and Identity</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </figcaption>
+                                </figure>
+                            </a>
+                        </li>
+                        <!-- end portfolio item -->
+                        <!-- start portfolio item -->
+                        <li class="grid-item advertising branding design photography wow fadeInUp" data-wow-delay="0.6s">
+                            <a href="single-project-page-04.html">
+                                <figure>
+                                    <div class="portfolio-img"><img src="http://placehold.it/800x650" alt="" /></div>
+                                    <figcaption>
+                                        <div class="portfolio-hover-main text-center last-paragraph-no-margin">
+                                            <div class="portfolio-hover-box vertical-align-middle">
+                                                <div class="portfolio-hover-content position-relative">
+                                                    <span class="font-weight-600 alt-font text-uppercase margin-one-bottom display-block text-extra-dark-gray">Teabag Collection</span>
+                                                    <p class="text-medium-gray text-uppercase text-extra-small">Web and Photography</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </figcaption>
+                                </figure>
+                            </a>
+                        </li>
+                        <!-- end portfolio item -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end work section -->
+    i = i + 1;
+}

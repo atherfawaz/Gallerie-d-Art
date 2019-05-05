@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewBag.Title = "RandomArtwork";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Art_Gallery.Models;
+
+@{
+    var temp = Model.obj;
+    var temp1 = Model.sim;
+    var xidentifier = Model.identifier;
+    int i = 1;
+}
+
+<script>
+    function validateRating() {
+        var x = document.forms["ratingform"]["rating"];
+        if (x == "") {
+            alert("Rating cannot be empty!");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+@foreach (Art a in temp)
+{
+    string stt = a.Link.ToString();
+    <!-- start parallax section -->
+    <section class="wow fadeIn one-fourth-screen cover-background" style="background-image: url('@a.Link')">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"></div>
+            </div>
+            <div class="down-section text-center"><a href="#down-section" class="inner-link"><i class="ti-arrow-down icon-extra-small text-white bg-deep-pink padding-15px-all xs-padding-10px-all border-radius-100"></i></a></div>
+        </div>
+    </section>
+    <!-- end parallax section -->
+    <!-- start about section -->
+    <section id="down-section" class="wow fadeIn bg-extra-dark-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 sm-margin-50px-bottom  xs-margin-30px-bottom wow fadeInLeft">
+                    <h2 class="alt-font font-weight-700 letter-spacing-minus-2 text-white margin-5px-bottom">@a.Title</h2>
+                    <h6 class="alt-font font-weight-300">@a.Creator</h6>
+                    <p class="margin-35px-bottom display-block">@a.Description</p>
+                    @{ var u = @Context.Session[@Context.Session.SessionID.ToString()] as User; }
+                    @if (u != null && u.acc_type == "User")
+                    {
+                        <a href='@Url.Action("Purchase", "Purchase", new { identifier = xidentifier })' class="btn btn-transparent-light-gray btn-small">Buy Now</a>
+                    }
+                    @if (u != null && u.acc_type == "Admin")
+                    {
+                        <a href='@Url.Action("delete_art", "DisplayArtwork", new { identifier = xidentifier })' class="btn btn-transparent-light-gray btn-small">Delete Artwork</a>
+                    }
+                    @if (u != null)
+                    {
+                        <a href='@Url.Action("like_art", "DisplayArtWork", new { identifier = xidentifier })' class="btn btn-transparent-light-gray btn-small">Like Artwork</a>
+                    }
+                </div>
+                <div class="col-md-4 col-md-offset-2 wow fadeInRight">
+                    <ul class="list-style-9 margin-twelve-left">
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Creator</span>@a.Creator</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Medium</span>@a.Medium</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Origin</span>@a.Origin</li>
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Date</span>@a.Date</li>
+                        @{ var p = "$ " + a.Price.ToString(); }
+                        <li class="text-uppercase"><span class="display-block text-extra-small text-white">Price</span>@p</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end about section -->
+    <!-- start parallax section -->
+    <section class="wow fadeIn no-padding parallax one-fifth-screen sm-height-500px xs-height-350px background-position-x-50" data-stellar-background-ratio="0.4" style="background-image: url('@a.Link')">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12"></div>
+            </div>
+        </div>
+    </section>
+    <!-- end parallax section -->
+
+    if (u != null)
+    {
+        <!-- start contact form section -->
+        <section class="wow fadeIn big-section" id="section-down">
+            <div class="container">
+                <div class="row equalize sm-equalize-auto">
+                    <div class="col-md-6 col-sm-12 col-xs-12 sm-margin-30px-bottom wow fadeInLeft">
+                        <div class="padding-fifteen-all bg-light-gray border-radius-6 md-padding-seven-all xs-padding-30px-all height-100">
+                            <span class="text-extra-dark-gray alt-font text-large font-weight-600 margin-25px-bottom display-block">Rate this Artwork</span>
+                            <form name="ratingform" id="" onsubmit="return validateRating()" action="@Href("~/DisplayArtwork/rate_art", new { identifier = xidentifier })" method="post">
+                                <div>
+                                    <div id="success-contact-form" class="no-margin-lr"></div>
+                                    <fieldset>
+                                        <p>
+                                            <label>Choose Rating</label>
+                                            <select id="rating" name="rating">
+                                                <option value="5">5 (Revered)</option>
+                                                <option value="4">4 (Commendable)</option>
+                                                <option value="3">3 (Average)</option>
+                                                <option value="2">2 (Sub-par)</option>
+                                                <option value="1">1 (Detestable)</option>
+                                            </select>
+                                        </p>
+                                    </fieldset>
+                                    <textarea name="comment" id="comment" placeholder="Anything else that you would like to say about this artwork?" rows="5" class="border-radius-4 bg-white medium-textarea"></textarea>
+                                    <button id="contact-us-button" type="submit" class="btn btn-small border-radius-4 btn-dark-gray">Submit Rating</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 last-paragraph-no-margin wow fadeInRight">
+                        <div class="padding-ten-all bg-light-gray border-radius-6 md-padding-seven-all xs-padding-30px-all height-100 sm-text-center">
+                            <img src="@a.Link" alt="" class="border-radius-6 margin-35px-bottom xs-margin-30px-bottom">
+                            <span class="text-large font-weight-600 alt-font text-extra-dark-gray margin-5px-bottom display-block">@a.Title</span>
+                            <p>@a.Description</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- end contact form section -->
+    }
+
+
+    <!-- start blockquote section -->
+    <section class="wow fadeIn big-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 center-col text-center">
+                    <i class="fas fa-quote-left icon-small text-deep-pink display-block margin-25px-bottom"></i>
+                    <h4 class="alt-font text-extra-dark-gray font-weight-600">The true work of art is but a shadow of the divine perfection.</h4>
+                    <span class="text-uppercase text-extra-small alt-font letter-spacing-3 text-medium-gray">Michelangelo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end blockquote section -->
+    <!-- start work section -->
+    <section class="wow fadeIn bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 center-col margin-eight-bottom text-center">
+                    <div class="alt-font text-medium-gray margin-10px-bottom text-uppercase text-small">Related Artworks</div>
+                    <h5 class="alt-font text-extra-dark-gray font-weight-600">Browse through other artworks tailored according to your taste</h5>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid padding-five-lr">
+            <div class="row no-margin">
+                <div class="filter-content overflow-hidden">
+                    <ul class="portfolio-grid work-4col gutter-large hover-option7">
+                        <li class="grid-sizer"></li>
+                        @foreach (Art b in temp1)
+                        {
+                            <!-- start portfolio item -->
+                            <li class="grid-item web branding design wow fadeInUp">
+                                <a href='@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @b.id })'>
+                                    <figure>
+                                        <div class="portfolio-img"><img src=@b.Link alt="" /></div>
+                                        <figcaption>
+                                            <div class="portfolio-hover-main text-center last-paragraph-no-margin">
+                                                <div class="portfolio-hover-box vertical-align-middle">
+                                                    <div class="portfolio-hover-content position-relative">
+                                                        <span class="font-weight-600 alt-font text-uppercase margin-one-bottom display-block text-extra-dark-gray">@b.Title</span>
+                                                        <p class="text-medium-gray text-uppercase text-extra-small">@b.Creator</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </li>
+                            <!-- end portfolio item -->
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    i = i + 1;
+    <!-- end work section -->
+}
