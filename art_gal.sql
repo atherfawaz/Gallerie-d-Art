@@ -17,7 +17,7 @@ CREATE TABLE [User] (
 )
 
 CREATE TABLE Artwork (
-	ArtworkID				INT				PRIMARY KEY,
+	ArtworkID				INT				PRIMARY KEY			IDENTITY,
 	Creator					VARCHAR(200),
 	[Name]					VARCHAR(300),
 	[Description]			VARCHAR(MAX),
@@ -26,24 +26,19 @@ CREATE TABLE Artwork (
 	[Date]					DATE,
 	Price					INT,
 	pictureLink				VARCHAR(MAX)
-)
-
-CREATE TABLE ArtworkPictures (
-	PictureID				INT				PRIMARY KEY,
-	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID),
-	pictureLink				VARCHAR(50)
-)
-  
+) 
  
 CREATE TABLE UserArtworkPurchase (
-	PurchaseID				INT				PRIMARY KEY,
-	UserID					INT				FOREIGN KEY REFERENCES [User](UserID),
-	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID),
+	PurchaseID				INT				PRIMARY KEY		IDENTITY,
+	UserID					INT				FOREIGN KEY REFERENCES [User](UserID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
+	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
 	DataSubmitted			DATE
 )
  
 CREATE TABLE UserArtworkSale (
-	SaleID					INT				PRIMARY KEY,
+	SaleID					INT				PRIMARY KEY		IDENTITY,
 	UserID					INT				FOREIGN KEY REFERENCES [User](UserID),
 	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID),
 	DataSubmitted			DATE
@@ -55,30 +50,25 @@ CREATE TABLE Catagory (
 	Popularity				INT
 )
 
-
-CREATE TABLE Specifics (
-	ContentID				INT				PRIMARY KEY,
-	[Name]					VARCHAR(20),
-	CatagoryID				INT				FOREIGN KEY REFERENCES Catagory(CatagoryID),
-)
-
-CREATE TABLE UserSpecifics (
-	UserID					INT,
-	SpecificsID				INT,
-	ContentID				INT				FOREIGN KEY REFERENCES specifics(contentID),
-	
-	PRIMARY KEY(UserID, SpecificsID)
+CREATE TABLE UserLikes (
+	likeID					INT				PRIMARY KEY		IDENTITY,
+	userID					INT				FOREIGN KEY REFERENCES [User](UserID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
+	artID					INT				FOREIGN KEY REFERENCES Artwork(ArtworkID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
 )
 
 CREATE TABLE ArtworkRating (
-	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID) ,
-	UserID					INT				FOREIGN KEY REFERENCES [User](UserID),
+	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
+	UserID					INT				FOREIGN KEY REFERENCES [User](UserID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
 	Rating					INT				NOT NULL,
+	Additional				VARCHAR(30)		NULL,
 
 	PRIMARY KEY(ArtworkID, UserID)
 )
 GO
-
 
 
 CREATE PROCEDURE signUp (
@@ -136,116 +126,51 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE searchArtwork (
-	@ArtworkID			INT,
-	@Name				VARCHAR(15)		OUTPUT,
-	@Creator			VARCHAR(15)		OUTPUT,
-	@Price				INT				OUTPUT,
-	@Date				DATE			OUTPUT,
-	@Origin				VARCHAR(20)		OUTPUT,
-	@Medium				VARCHAR(25)		OUTPUT,
-	@Description		VARCHAR(250)	OUTPUT
-)
-AS
-BEGIN
-
-	SELECT @name = [Name], @Creator = Creator, 
-		   @Price = Price, @Date = [Date], 
-		   @Origin = Origin, @Medium = Medium, 
-		   @Description = [Description]
-	FROM Artwork 
-	WHERE ArtworkID = @artworkID
-END
-GO
-
-CREATE FUNCTION getPictures (
-	@artworkID			INT
-)
-RETURNS TABLE
-AS
-	RETURN (SELECT * 
-		    FROM ArtworkPictures
-			WHERE ArtworkID = @artworkID)
-GO
-
 CREATE PROCEDURE addArtwork (
-	@artworkID			INT,
-	@name				VARCHAR(15),
 	@creator			VARCHAR(15),
-	@price				INT	,
-	@date				DATE,
-	@origin				VARCHAR(20),
-	@medium				VARCHAR(25),
+	@name				VARCHAR(15),
 	@description		VARCHAR(250),
+	@medium				VARCHAR(25),
+	@origin				VARCHAR(20),
+	@date				DATE,
+	@price				INT,
 	@link				VARCHAR(MAX)
 )
 AS 
 BEGIN
 	INSERT INTO Artwork
 	VALUES (
-		@artworkID,
-		@name,
 		@creator,
-		@price,
-		@date,
-		@origin,
-		@medium,
+		@name,
 		@description,
+		@medium,
+		@origin,
+		@date,
+		@price,
 		@link)
 END
 GO
 
-CREATE PROCEDURE addArtworkPictures (
-	@pictureID		INT,
-	@artworkID		INT,
-	@pictureLink	VARCHAR(50)
-)
-AS 
-BEGIN
-	INSERT INTO ArtworkPictures
-	VALUES (
-		@pictureID,
-		@artworkID,
-		@pictureLink)
-END
-GO
-
-CREATE PROCEDURE rateArtwork (
+CREATE PROCEDURE rateArt (
 	@userID			INT,
-	@artworkID		INT, 
-	@rating			INT
+	@artID			INT, 
+	@rating			INT,
+	@additional		VARCHAR(30),
+	@out			INT			OUTPUT
 )
 AS 
 BEGIN
-	INSERT INTO artworkRating
-	VALUES (
-			@artworkID,
-			@userID,
-			@rating)	
-END
-GO
-
-CREATE FUNCTION searchArtDescription (
-	@searchTerm		VARCHAR(50)
-)
-RETURNS TABLE
-AS 
-	RETURN (SELECT * 
-			FROM Artwork 
-			WHERE Artwork.[Description] LIKE CONCAT('%', @searchTerm, '%'))
-GO
-
-CREATE PROCEDURE artworkMedium (
-	@userID			INT,
-	@artOut			INT					OUTPUT
-)
-AS
-BEGIN
-
-	SELECT @artOut = artworkID
-	FROM (SELECT Medium 
-	      FROM ArtworkRating AS R INNER JOIN Artwork AS A ON R.artworkID = A.artworkID 
-		  WHERE rating >= 4 AND userID = @userID) AS Foo INNER JOIN Artwork AS Ar ON Foo.Medium = Ar.Medium
+	SET @out = -1	--rating already exists
+	IF (NOT EXISTS (SELECT * FROM ArtworkRating WHERE userID = @userID AND ArtworkID = @artID))
+	BEGIN
+		INSERT INTO artworkRating
+		VALUES (
+				@artID,
+				@userID,
+				@rating,
+				@additional)
+		SET @out = 0
+	END
 END
 GO
 
@@ -260,7 +185,8 @@ AS
 			WHERE Origin = @origin AND ArtworkID != @id)
 GO
 								
-								CREATE FUNCTION searchArtOrigin(
+
+CREATE FUNCTION searchArtOrigin(
 	@identifier VARCHAR(500)
 )
 RETURNS TABLE 
@@ -281,36 +207,27 @@ AS
 			WHERE Artwork.Name = @identifier)
 GO
 
-
--- show advanced options
-EXEC sp_configure 'show advanced options', 1
-GO
-RECONFIGURE
-GO
- 
--- enable Database Mail XPs
-EXEC sp_configure 'Database Mail XPs', 1
-GO
-RECONFIGURE
-GO
- 
--- check if it has been changed
-EXEC sp_configure 'Database Mail XPs'
-GO
- 
--- hide advanced options
-EXEC sp_configure 'show advanced options', 0
-GO
-RECONFIGURE
-GO
-
-ALTER PROCEDURE send_mail(
+CREATE PROCEDURE send_mail(
 	@user_id INT,
 	@sub_type VARCHAR(30)
 )
 AS
 BEGIN
-	SET NOCOUNT OFF
+	-- show advanced options
+	EXEC sp_configure 'show advanced options', 1
+	RECONFIGURE
+	
+	-- enable Database Mail XPs
+	EXEC sp_configure 'Database Mail XPs', 1
+	RECONFIGURE
+	 
+	-- check if it has been changed
+	EXEC sp_configure 'Database Mail XPs'
+	
+	-- hide advanced options
+	EXEC sp_configure 'show advanced options', 0
+	RECONFIGURE
+	
 	DECLARE @email VARCHAR(30), @user_Name VARCHAR(15)
 	SELECT @email = Email, @user_Name = [User].FirstName
 	FROM [User]
@@ -329,29 +246,136 @@ BEGIN
 END
 GO
 
-CREATE FUNCTION searchArtOrigin(
-	@identifier VARCHAR(500)
+CREATE PROCEDURE likeArt (
+	@userID		INT,
+	@artID		INT,
+	@out		INT		OUTPUT
 )
-RETURNS TABLE 
 AS
-	RETURN (SELECT * 
-			FROM Artwork
-			WHERE Artwork.Origin = @identifier)
+BEGIN
+	SET @out = -1	--already liked
+	IF (NOT EXISTS (SELECT * FROM UserLikes WHERE userID = @userID AND artID = @artID))
+	BEGIN
+		INSERT INTO UserLikes
+		VALUES (@userID, @artID)
+		
+		SET @out = 0
+	END
+END
 GO
 
-CREATE FUNCTION searchArt(
-	@identifier VARCHAR(500)
+CREATE PROCEDURE removeArt (
+	@artID		INT,
+	@out		INT			OUTPUT
 )
-RETURNS TABLE 
 AS
-	RETURN (SELECT * 
-			FROM Artwork
-			WHERE Artwork.Name = @identifier)
+BEGIN
+	SET @out = -1	--already liked
+	IF (EXISTS (SELECT * FROM Artwork WHERE artworkID = @artID))
+	BEGIN
+		DELETE Artwork
+		WHERE ArtworkID = @artID
+		
+		SET @out = 0
+	END
+END
 GO
 
-BULK INSERT Artwork
-FROM 'D:\Other\FAST\DB\Gallerie-d-Art\data.txt'
+CREATE PROCEDURE sellArt (
+	@userID			INT,
+	@name			VARCHAR(15),
+	@creator		VARCHAR(15),
+	@price			INT,
+	@date			DATE,
+	@origin			VARCHAR(20),
+	@medium			VARCHAR(MAX),
+	@description	VARCHAR(MAX),
+	@link			VARCHAR(MAX)
+)
+AS
+BEGIN
+	EXEC addArtwork @name, @creator, @price, @date, @origin, @medium, @description, @link
+
+	DECLARE @artID	INT
+	SELECT TOP 1 @artID = artworkID
+	FROM Artwork
+	ORDER BY ArtworkID DESC
+
+	INSERT INTO UserArtworkSale
+	VALUES (@userID, @artID, CAST(GETDATE() AS DATE))
+END
+GO
+
+CREATE PROCEDURE purchaseArt (
+	@userID			INT,
+	@sub_type		VARCHAR(30),
+	@artID			INT
+)
+AS
+BEGIN
+	IF(NOT EXISTS (SELECT * FROM UserArtworkPurchase WHERE ArtworkID = @artID AND userID = @userID))
+	BEGIN
+		INSERT INTO UserArtworkPurchase
+		VALUES (@userID, @artID, CAST(GETDATE() AS DATE))
+	END
+END
+GO
+
+CREATE FUNCTION get_liked (
+	@userID		INT
+)
+RETURNS TABLE
+AS
+	RETURN ( SELECT B.ArtworkID, B.Creator, B.Date, B.Description, B.Medium, B.Name, B.Origin, B.pictureLink, B.Price
+			 FROM UserLikes AS A JOIN Artwork AS B ON A.artID = B.ArtworkID
+			 WHERE A.userID = @userID)
+GO
+
+CREATE FUNCTION get_sale (
+	@userID		INT
+)
+RETURNS TABLE
+AS
+	RETURN ( SELECT B.ArtworkID, B.Creator, B.Date, B.Description, B.Medium, B.Name, B.Origin, B.pictureLink, B.Price
+			 FROM UserArtworkSale AS A JOIN Artwork AS B ON A.artworkID = B.ArtworkID
+			 WHERE A.userID = @userID)
+GO
+
+CREATE FUNCTION get_pur (
+	@userID		INT
+)
+RETURNS TABLE
+AS
+	RETURN ( SELECT B.ArtworkID, B.Creator, B.Date, B.Description, B.Medium, B.Name, B.Origin, B.pictureLink, B.Price
+			 FROM UserArtworkPurchase AS A JOIN Artwork AS B ON A.artworkID = B.ArtworkID
+			 WHERE A.userID = @userID)
+GO
+
+CREATE TABLE #T(ArtworkID				INT,
+				Creator					VARCHAR(200),
+				[Name]					VARCHAR(300),
+				[Description]			VARCHAR(MAX),
+				Medium					VARCHAR(MAX),
+				Origin					VARCHAR(100),
+				[Date]					DATE,
+				Price					INT,
+				pictureLink				VARCHAR(MAX))
+
+BULK INSERT #T
+FROM 'C:\Users\ather\Desktop\Test\Gallerie-d-Art\data.txt'
 WITH (
 	ROWTERMINATOR = '\n',
 	FIELDTERMINATOR = '=!=!='
 )
+GO
+
+INSERT INTO Artwork(Creator, [Name], [Description], Medium, Origin, [Date], Price, pictureLink)
+SELECT Creator, [Name], [Description], Medium, Origin, [Date], Price, pictureLink FROM #T
+
+
+-----------
+USE master
+GO
+
+DROP TABLE #T
+GO
