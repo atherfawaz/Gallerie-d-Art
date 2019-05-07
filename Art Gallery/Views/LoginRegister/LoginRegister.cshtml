@@ -4,68 +4,67 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@model System.Data.SqlClient.SqlDataReader
-@{
-    System.Data.SqlClient.SqlDataReader reader = Model;
-}
+<link rel="stylesheet" type="text/css" href="~/Content/toastR/toastr.min.css" />
+<script src="~/Content/toastR/jQuery.min.js"></script>
+<script src="~/Content/toastR/toastr.min.js"></script>
 
 <script>
     function validateRegisterForm() {
         var x = document.forms["registerform"]["fname"].value;
         if (x == "") {
-            alert("First name must be filled out");
+            toastr.error("First name must be filled out");
             return false;
         }
-        if (!("/^[a-zA-Z ]{2,30}$/".test(x))) {
-            alert("Please enter a valid first name");
+        if (!(/^[a-zA-Z ]{2,30}$/.test(x))) {
+            toastr.error("Please enter a valid first name");
             return false;
         }
 
         x = document.forms["registerform"]["lname"].value;
         if (x == "") {
-            alert("Last name must be filled out");
+            toastr.error("Last name must be filled out");
             return false;
         }
-        if (!("/^[a-zA-Z ]{2,30}$/".test(x))) {
-            alert("Please enter a valid last name");
+        if (!(/^[a-zA-Z ]{2,30}$/.test(x))) {
+            toastr.error("Please enter a valid last name");
             return false;
         }
 
         x = document.forms["registerform"]["email"].value;
         if (x == "") {
-            alert("Email must be filled out");
+            toastr.error("Email must be filled out");
             return false;
         }
         var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!re.test(String(x).toLowerCase())) {
-            alert("Please enter a valid email");
+            toastr.error("Please enter a valid email");
             return false;
         }
 
         x = document.forms["registerform"]["password"].value;
-        if (x == "" || !("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@@#\$%\^&\*])(?=.{8,})".test(x))) {
-            alert("Please choose a valid password composed of minimum 8 characters, atleast 1 uppercase, 1 lowercase, 1 special character and 1 numeric value");
+        if (x == "" || !(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@@#\$%\^&\*])(?=.{8,})/.test(x))) {
+            toastr.error("Please choose a valid password composed of minimum 8 characters, atleast 1 uppercase, 1 lowercase, 1 special character and 1 numeric value");
             return false;
         }
-        alert("All fields are correct, registeration checks work!");
+        toastr.success("Registered successfully, Login now");
         return true;
     }
 
     function validateLoginForm() {
         var x = document.forms["loginform"]["email"].value;
         if (x == "") {
-            alert("Email must be filled out");
+            toastr.error("Email must be filled out");
             return false;
         }
         var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!re.test(String(x).toLowerCase())) {
-            alert("Please enter a valid email");
+            toastr.error("Please enter a valid email");
             return false;
         }
 
         var x = document.forms["loginform"]["password"].value;
-        if (x == "" || !("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@@#\$%\^&\*])(?=.{8,})".test(x))) {
-            alert("Please choose a valid password composed of minimum characters, atleast 1 uppercase, 1 lowercase, 1 special character and 1 numeric value");
+        if (x == "" || !(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@@#\$%\^&\*])(?=.{8,})/.test(x))) {
+            toastr.error("Wrong Password");
             return false;
         }
         return true;
@@ -185,3 +184,27 @@
     </section>
 </div>
 <!-- end login section -->
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function notif() {
+        if("@ViewBag.Message.ToString()" != "")
+            toastr.error("@ViewBag.Message.ToString()");
+    });
+</script>

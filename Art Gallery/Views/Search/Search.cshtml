@@ -3,6 +3,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link rel="stylesheet" type="text/css" href="~/Content/toastR/toastr.min.css" />
+<script src="~/Content/toastR/jQuery.min.js"></script>
+<script src="~/Content/toastR/toastr.min.js"></script>
+
 <script>
     function nameVerification() {
         var x = document.forms["searchnamebar"]["name"].value;
@@ -71,3 +75,27 @@
     </div>
 </section>
 <!-- end countdown section -->
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function notif() {
+        if("@ViewBag.Message.ToString()" != "")
+            toastr.error("@ViewBag.Message.ToString()");
+    });
+</script>

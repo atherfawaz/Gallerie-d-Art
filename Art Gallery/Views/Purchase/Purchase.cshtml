@@ -12,6 +12,10 @@
     var commercialprice = 0;
 }
 
+<link rel="stylesheet" type="text/css" href="~/Content/toastR/toastr.min.css" />
+<script src="~/Content/toastR/jQuery.min.js"></script>
+<script src="~/Content/toastR/toastr.min.js"></script>
+
 @foreach (Art a in temp)
 {
     <!-- start about section -->
@@ -75,7 +79,7 @@
                                 <ul class="list-style-11">
                                     <li>Standard license</li>
                                     <li>Ownership of the artwork</li>
-                                    <li>Artwork cannot be resold</li>
+                                    <li>Artwork can be resold</li>
                                     <li>Artwork cannot be exhibited in art galleries</li>
                                     <li>No discounts on other artworks</li>
                                 </ul>
@@ -124,7 +128,7 @@
                                 <div class="pricing-action margin-35px-top sm-no-margin-top">
                                     @{ var st1 = "Commercial";
                                         var pr1 = "Confirm " + st1; }
-                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st1 })" class="btn btn-dark-gray btn-small text-extra-small">@pr1</a>
+                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st1, identifier = identifier })" class="btn btn-dark-gray btn-small text-extra-small">@pr1</a>
                                 </div>
                                 <!-- end pricing action -->
                             </div>
@@ -163,7 +167,7 @@
                                 <div class="pricing-action margin-35px-top sm-no-margin-top">
                                     @{ var st2 = "Premium";
                                         var pr2 = "Confirm " + st2; }
-                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st1 })" class="btn btn-dark-gray btn-small text-extra-small">@pr2</a>
+                                    <a href="@Url.Action("confirm_pur", "Purchase", new { u_id = u.user_id, sub_type = st1, identifier = identifier })" class="btn btn-dark-gray btn-small text-extra-small">@pr2</a>
                                 </div>
                                 <!-- end pricing action -->
                             </div>
@@ -177,3 +181,27 @@
     </section>
     <!-- end pricing section -->
 }
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function notif() {
+        if("@ViewBag.Message.ToString()" != "")
+            toastr.error("@ViewBag.Message.ToString()");
+    });
+</script>

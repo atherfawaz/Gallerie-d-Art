@@ -11,31 +11,45 @@ namespace Art_Gallery.Controllers
     public class PurchaseController : Controller
     {
         // GET: Purchase
-        public ActionResult Purchase(int identifier)
+        public ActionResult Purchase(int identifier, string err_msg = "")
         {
-            var passingobj = new Parameters();
-            List<Art> obj = CRUD.get_Specific_Art(identifier);
-            passingobj.identifier = identifier;
-            passingobj.obj = obj;
-            if (obj == null)
+            int aa = CRUD.countArt();
+            if (aa >= identifier && identifier > 0)
             {
-                ViewBag.Message = "Problem Fetching Artwork for purchase";
+                var passingobj = new Parameters();
+                List<Art> obj = CRUD.get_Specific_Art(identifier);
+                passingobj.identifier = identifier;
+                passingobj.obj = obj;
+                if (obj == null)
+                {
+                    return RedirectToAction("Index", "Home", new { err_msg = "Problem Fetching Artwork for purchase" });
+                }
+                else
+                    ViewBag.Message = err_msg;
+                return View(passingobj);
             }
-            return View(passingobj);
+            else
+                return RedirectToAction("Index", "Home", new { err_msg = "Artwork not found" });
         }
 
         public ActionResult confirm_pur(int u_id, string sub_type, int identifier)
         {
             int error = CRUD.purchase(u_id, identifier, sub_type);
+
+            string a = "";
             if(error == -1)
             {
-                ViewBag.Message = "Error purchasing";
+                a = "Error purchasing";
+                return RedirectToAction("Purchase", "Purchase", new { identifier, err_msg = a });
+
             }
             else if (error == -2)
             {
-                ViewBag.Message = "Error connecting to database!";
+                a = "Error connecting to database!";
+                return RedirectToAction("Purchase", "Purchase", new { identifier, err_msg = a });
             }
-            return RedirectToAction("Purchase", "Purchase", new { identifier = identifier });
+            identifier = ((identifier + 59) * 123) + 10;
+            return RedirectToAction("DisplayArtworkPage", "DisplayArtwork", new { identifier });
         }
     }
 }

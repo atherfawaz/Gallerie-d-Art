@@ -6,7 +6,7 @@ import string
 from datetime import date
 
 http = urllib3.PoolManager()
-f = open("file.txt", "w+", encoding="utf-8")
+f = open("art.txt", "w+", encoding="utf-8")
 
 k = 0
 j = 0
@@ -22,7 +22,7 @@ for i in range(200):
 	
 	data = json.loads(r.data)
 	for d in data['records']:
-		if 'people' in d and len(d['title']) < 20 and d['description'] and len(d['description']) > 150 and d['title'] and 'images' in d and d['images'] and d['images'][0]['baseimageurl'] and 'medium' in d and d['medium'] and 'century' in d and d['century']:
+		if 'people' in d and d['description'] and len(d['description']) > 250 and d['title'] and 'images' in d and d['images'] and d['images'][0]['baseimageurl'] and 'medium' in d and d['medium'] and 'century' in d and d['century']:
 			j = 0
 			for p in d['people']:
 				if p['role'] == 'Artist' and p['name'] and p['name'] != 'Unidentified Artist' and p['name'] != '':
@@ -54,7 +54,7 @@ for i in range(200):
 				f.write("=!=!=")
 				f.write(date.today().strftime('%Y-%m-%d'))
 				f.write("=!=!=")
-				f.write(str(random.randrange(30000, 500000)))
+				f.write(str(random.randrange(30000, 500000, 500)))
 				f.write("=!=!=")
 				f.write(d['images'][0]['baseimageurl'])
 				f.write("\n")

@@ -12,7 +12,16 @@
     var temp1 = Model.sim;
     var xidentifier = Model.identifier;
     int i = 1;
+    float ratings = Model.rating;
+    int error = Model.error;
+    int checkPur = Model.purCheck;
+    int checkLike = Model.likeCheck;
+    int checkRating = Model.ratingCheck;
 }
+
+<link rel="stylesheet" type="text/css" href="~/Content/toastR/toastr.min.css" />
+<script src="~/Content/toastR/jQuery.min.js"></script>
+<script src="~/Content/toastR/toastr.min.js"></script>
 
 <script>
     function validateRating() {
@@ -21,6 +30,7 @@
             alert("Rating cannot be empty!");
             return false;
         }
+
         return true;
     }
 </script>
@@ -48,11 +58,11 @@
                     <h6 class="alt-font font-weight-300">@a.Creator</h6>
                     <p class="margin-35px-bottom display-block">@a.Description</p>
                     @{ var u = @Context.Session[@Context.Session.SessionID.ToString()] as User; }
-                    @if (u != null && u.acc_type == "User")
+                    @if (checkPur == 0 && u != null && u.acc_type == "User")
                     {
                         <a href='@Url.Action("Purchase", "Purchase", new { identifier = xidentifier })' class="btn btn-transparent-light-gray btn-small">Buy Now</a>
                     }
-                    @if (u != null && u.acc_type == "Admin")
+                    @if (error == -1 && u != null && u.acc_type == "Admin")
                     {
                         <a href='@Url.Action("delete_art", "DisplayArtwork", new { identifier = xidentifier })' class="btn btn-transparent-light-gray btn-small">Delete Artwork</a>
                     }
@@ -69,6 +79,17 @@
                         <li class="text-uppercase"><span class="display-block text-extra-small text-white">Date</span>@a.Date</li>
                         @{ var p = "$ " + a.Price.ToString(); }
                         <li class="text-uppercase"><span class="display-block text-extra-small text-white">Price</span>@p</li>
+                        <li class="text-uppercase">
+                            <span class="display-block text-extra-small text-white">Rating</span>
+                            @{ var z = ratings.ToString(); }
+                            @for (var j = 0; j < ratings; j++)
+                            {<i class="material-icons"> star</i>}
+                            @if (ratings - Math.Truncate(ratings) > 0.25 && ratings - Math.Truncate(ratings) < 0.75)
+                            {<i class="material-icons"> star_half </i>}
+                            @if (ratings - Math.Truncate(ratings) > 0.75)
+                            {<i class="material-icons"> star</i>}
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -85,48 +106,48 @@
     </section>
     <!-- end parallax section -->
 
-       if (u != null)
-       {
-            <!-- start contact form section -->
-            <section class="wow fadeIn big-section" id="section-down">
-                <div class="container">
-                    <div class="row equalize sm-equalize-auto">
-                        <div class="col-md-6 col-sm-12 col-xs-12 sm-margin-30px-bottom wow fadeInLeft">
-                            <div class="padding-fifteen-all bg-light-gray border-radius-6 md-padding-seven-all xs-padding-30px-all height-100">
-                                <span class="text-extra-dark-gray alt-font text-large font-weight-600 margin-25px-bottom display-block">Rate this Artwork</span>
-                                <form name="ratingform" id="" onsubmit="return validateRating()" action="@Href("~/DisplayArtwork/rate_art", new { identifier = xidentifier })" method="post">
-                                    <div>
-                                        <div id="success-contact-form" class="no-margin-lr"></div>
-                                        <fieldset>
-                                            <p>
-                                                <label>Choose Rating</label>
-                                                <select id="rating" name="rating">
-                                                    <option value="5">5 (Revered)</option>
-                                                    <option value="4">4 (Commendable)</option>
-                                                    <option value="3">3 (Average)</option>
-                                                    <option value="2">2 (Sub-par)</option>
-                                                    <option value="1">1 (Detestable)</option>
-                                                </select>
-                                            </p>
-                                        </fieldset>
-                                        <textarea name="comment" id="comment" placeholder="Anything else that you would like to say about this artwork?" rows="5" class="border-radius-4 bg-white medium-textarea"></textarea>
-                                        <button id="contact-us-button" type="submit" class="btn btn-small border-radius-4 btn-dark-gray">Submit Rating</button>
-                                    </div>
-                                </form>
-                            </div>
+    if (u != null)
+    {
+        <!-- start contact form section -->
+        <section class="wow fadeIn big-section" id="section-down">
+            <div class="container">
+                <div class="row equalize sm-equalize-auto">
+                    <div class="col-md-6 col-sm-12 col-xs-12 sm-margin-30px-bottom wow fadeInLeft">
+                        <div class="padding-fifteen-all bg-light-gray border-radius-6 md-padding-seven-all xs-padding-30px-all height-100">
+                            <span class="text-extra-dark-gray alt-font text-large font-weight-600 margin-25px-bottom display-block">Rate this Artwork</span>
+                            <form name="ratingform" id="" onsubmit="return validateRating()" action="@Href("~/DisplayArtwork/rate_art", new { identifier = xidentifier })" method="post">
+                                <div>
+                                    <div id="success-contact-form" class="no-margin-lr"></div>
+                                    <fieldset>
+                                        <p>
+                                            <label>Choose Rating</label>
+                                            <select id="rating" name="rating">
+                                                <option value="5">5 (Revered)</option>
+                                                <option value="4">4 (Commendable)</option>
+                                                <option value="3">3 (Average)</option>
+                                                <option value="2">2 (Sub-par)</option>
+                                                <option value="1">1 (Detestable)</option>
+                                            </select>
+                                        </p>
+                                    </fieldset>
+                                    <textarea name="comment" id="comment" placeholder="Anything else that you would like to say about this artwork?" rows="5" class="border-radius-4 bg-white medium-textarea"></textarea>
+                                    <button id="contact-us-button" type="submit" class="btn btn-small border-radius-4 btn-dark-gray">Submit Rating</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="col-md-6 col-sm-12 col-xs-12 last-paragraph-no-margin wow fadeInRight">
-                            <div class="padding-ten-all bg-light-gray border-radius-6 md-padding-seven-all xs-padding-30px-all height-100 sm-text-center">
-                                <img src="@a.Link" alt="" class="border-radius-6 margin-35px-bottom xs-margin-30px-bottom">
-                                <span class="text-large font-weight-600 alt-font text-extra-dark-gray margin-5px-bottom display-block">@a.Title</span>
-                                <p>@a.Description</p>
-                            </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 last-paragraph-no-margin wow fadeInRight">
+                        <div class="padding-ten-all bg-light-gray border-radius-6 md-padding-seven-all xs-padding-30px-all height-100 sm-text-center">
+                            <img src="@a.Link" alt="" class="border-radius-6 margin-35px-bottom xs-margin-30px-bottom">
+                            <span class="text-large font-weight-600 alt-font text-extra-dark-gray margin-5px-bottom display-block">@a.Title</span>
+                            <p>@a.Description</p>
                         </div>
                     </div>
                 </div>
-            </section>
-            <!-- end contact form section -->
-        }
+            </div>
+        </section>
+        <!-- end contact form section -->
+    }
     <!-- start blockquote section -->
     <section class="wow fadeIn big-section">
         <div class="container">
@@ -160,7 +181,7 @@
                         {
                             <!-- start portfolio item -->
                             <li class="grid-item web branding design wow fadeInUp">
-                                <a href='@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @b.id })'>
+                                <a href='@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = ((@b.id+59)*123)+10})'>
                                     <figure>
                                         <div class="portfolio-img"><img src=@b.Link alt="" /></div>
                                         <figcaption>
@@ -187,3 +208,27 @@
     <!-- end work section -->
     i = i + 1;
 }
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function notif() {
+        if("@ViewBag.Message.ToString()" != "")
+            toastr.error("@ViewBag.Message.ToString()");
+    });
+</script>

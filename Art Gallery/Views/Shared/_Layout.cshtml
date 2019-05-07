@@ -20,6 +20,7 @@
     <link rel="apple-touch-icon" sizes="114x114" href="~/Content/images/apple-touch-icon-114x114.png">
     <!-- animation -->
     <link rel="stylesheet" href="~/Content/css/animate.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- bootstrap -->
     <link rel="stylesheet" href="~/Content/css/bootstrap.min.css" />
     <!-- et line icon -->
@@ -125,6 +126,13 @@
                                                 {
                                                     <li class="dropdown">
                                                         <a href="~/Submit/Submit">Submit Artwork</a><span></span>
+                                                    </li>
+                                                }
+                                                <!-- end menu item -->
+                                                @if (u != null)
+                                                {
+                                                    <li class="dropdown">
+                                                        <a href="~/LoginRegister/logout">Logout</a><span></span>
                                                     </li>
                                                 }
                                                 <!-- end menu item -->

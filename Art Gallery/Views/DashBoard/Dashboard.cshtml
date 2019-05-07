@@ -11,8 +11,12 @@
     var sale = Model.sim;
     var pur = Model.obj1;
     var xidentifier = Model.identifier;
-    int i = 1;
+    var user_table = Model.user_table;
 }
+
+<link rel="stylesheet" type="text/css" href="~/Content/toastR/toastr.min.css" />
+<script src="~/Content/toastR/jQuery.min.js"></script>
+<script src="~/Content/toastR/toastr.min.js"></script>
 
 <script>
     function validateAddForm() {
@@ -122,7 +126,7 @@
                                     <div class="opacity-medium bg-black bg-black"></div>
                                     <figure class="position-absolute">
                                         <figcaption>
-                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @a.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@a.Title</h6></a>
+                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = (@a.id +59)*123+10 })><h6 class="font-weight-300 text-white margin-20px-bottom">@a.Title</h6></a>
                                             <p class="text-white width-85 sm-width-100">@a.Creator</p>
                                             <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
                                         </figcaption>
@@ -177,7 +181,7 @@
                                     <div class="opacity-medium bg-black bg-black"></div>
                                     <figure class="position-absolute">
                                         <figcaption>
-                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @b.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@b.Title</h6></a>
+                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = (@b.id +59)*123+10 })><h6 class="font-weight-300 text-white margin-20px-bottom">@b.Title</h6></a>
                                             <p class="text-white width-85 sm-width-100">@b.Creator</p>
                                             <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
                                         </figcaption>
@@ -232,7 +236,7 @@
                                     <div class="opacity-medium bg-black bg-black"></div>
                                     <figure class="position-absolute">
                                         <figcaption>
-                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @c.id })><h6 class="font-weight-300 text-white margin-20px-bottom">@c.Title</h6></a>
+                                            <a href=@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = (@c.id +59)*123+10 })><h6 class="font-weight-300 text-white margin-20px-bottom">@c.Title</h6></a>
                                             <p class="text-white width-85 sm-width-100">@c.Creator</p>
                                             <div class="separator-line-horrizontal-medium-light2 opacity5 bg-white margin-35px-top sm-margin-15px-top"></div>
                                         </figcaption>
@@ -292,37 +296,83 @@
         </form>
     </div>
 </section>
-<!-- end form style 02 section -->
 <!-- start page title section -->
-<section class="wow fadeIn bg-light-gray padding-100px-tb sm-padding-60px-tb xs-padding-30px-tb">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 display-table page-title-medium">
-                <div class="display-table-cell vertical-align-middle text-center">
-                    <!-- start page title -->
-                    <h1 class="alt-font text-extra-dark-gray font-weight-600 no-margin">Remove Artworks</h1>
-                    <!-- end page title -->
-                    <!-- start sub title -->
-                    <span class="display-block margin-10px-top alt-font">You can remove existing artworks from the database here</span>
-                    <!-- end sub title -->
+@{
+    if (u.acc_type == "Admin")
+    {
+        <section class="wow fadeIn bg-light-gray padding-100px-tb sm-padding-60px-tb xs-padding-30px-tb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12 display-table page-title-medium">
+                        <div class="display-table-cell vertical-align-middle text-center">
+                            <!-- start page title -->
+                            <h1 class="alt-font text-extra-dark-gray font-weight-600 no-margin">Manage Users</h1>
+                            <!-- end page title -->
+                            <!-- start sub title -->
+                            <span class="display-block margin-10px-top alt-font">You can manage users from the database here</span>
+                            <!-- end sub title -->
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-<!-- end page title section -->
-<!-- start form style 02 section -->
-<section class="wow fadeIn bg-extra-dark-gray">
-    <div class="container">
-        <form name="submitRemform" id="" onsubmit="return validateRemForm()" action="/Dashboard/remove_art" method="post">
-            <div class="row">
-                <div class="col-md-8 wow fadeIn center-col text-center">
-                    <div id="success-contact-form-2" class="no-margin-lr"></div>
-                    <input type="number" name="artid" id="artid" placeholder="ArtworkID" class="input-border-bottom">
-                    <button id="contact-us-button-2" type="submit" class="btn btn-small btn-deep-pink margin-30px-top xs-margin-three-top">Remove Artwork</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</section>
-<!-- end form style 02 section -->
+        </section>
+        <!-- end page title section -->
+        if (user_table != null)
+        {
+            foreach (User x in user_table)
+            {
+                <!-- start page title section -->
+                <section class="wow fadeIn bg-extra-dark-gray padding-35px-tb page-title-small">
+                    <div class="container">
+                        <div class="row equalize">
+                            <div class="col-lg-8 col-md-6 col-sm-6 col-xs-12 display-table">
+                                <div class="display-table-cell vertical-align-middle text-left xs-text-center">
+                                    <!-- start page title -->
+                                    <h1 class="alt-font text-white font-weight-400 xs-no-margin-bottom">@x.user_name | @x.acc_type</h1>
+                                    <!-- end page title -->
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 display-table text-right xs-text-left">
+                                @{
+                                    if (x.acc_type != "Admin")
+                                    {
+                                        <a class="btn btn-very-small btn-white btn-rounded md-margin-15px-bottom sm-display-table sm-margin-lr-auto" href='@Url.Action("makeAdmin", "Dashboard", new { identifier = x.user_name })'>Make Admin</a>
+                                    }
+                                    if (x.user_name != u.user_name)
+                                    {
+                                        <a class="btn btn-very-small btn-white btn-rounded md-margin-15px-bottom sm-display-table sm-margin-lr-auto margin-10px-left" href='@Url.Action("remove_User", "Dashboard", new { identifier = x.user_name })'>Remove User</a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- end page title section -->
+            }
+        }
+    }
+}
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function notif() {
+        if("@ViewBag.Message.ToString()" != "")
+            toastr.error("@ViewBag.Message.ToString()");
+    });
+</script>

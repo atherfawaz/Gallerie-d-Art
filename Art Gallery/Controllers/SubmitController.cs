@@ -10,8 +10,9 @@ namespace Art_Gallery.Controllers
     public class SubmitController : Controller
     {
         // GET: Submit
-        public ActionResult Submit()
+        public ActionResult Submit(string err_msg = "")
         {
+            ViewBag.Message = err_msg;
             return View();
         }
 
@@ -31,13 +32,11 @@ namespace Art_Gallery.Controllers
             int err = CRUD.sell_art(u.user_id, art);
             if(err == -1)
             {
-                ViewBag.Message = "Error connecting to database!";
-                return RedirectToAction("Submit", "Submit");
+                return RedirectToAction("Submit", "Submit", new { err_msg = "Error connecting to database!" });
             }
             if (err == -2)
             {
-                ViewBag.Message = "Unable to add artwork";
-                return RedirectToAction("Submit", "Submit");
+                return RedirectToAction("Submit", "Submit", new { err_msg = "Unable to add artwork" });
             }
             return RedirectToAction("Index", "Home");
         }

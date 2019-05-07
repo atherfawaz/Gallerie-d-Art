@@ -1,9 +1,20 @@
+USE master
+GO
+
+DROP TABLE #T
+GO
+
+DROP DATABASE ART_GAL
+GO
+
 CREATE DATABASE ART_GAL
 GO
 
 USE ART_GAL
 GO
+--<------------------------------------------------------------------------------------------------------------------------------->--
 
+--<------------------------------------------------------------------------------------------------------------------------------->--
 CREATE TABLE [User] (
 	UserID					INT				PRIMARY KEY			IDENTITY,
 	FirstName				VARCHAR(15),
@@ -39,15 +50,11 @@ CREATE TABLE UserArtworkPurchase (
  
 CREATE TABLE UserArtworkSale (
 	SaleID					INT				PRIMARY KEY		IDENTITY,
-	UserID					INT				FOREIGN KEY REFERENCES [User](UserID),
-	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID),
+	UserID					INT				FOREIGN KEY REFERENCES [User](UserID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
+	ArtworkID				INT				FOREIGN KEY REFERENCES Artwork(ArtworkID)
+											ON UPDATE CASCADE ON DELETE CASCADE,
 	DataSubmitted			DATE
-)
-
-CREATE TABLE Catagory (
-	CatagoryID				INT				PRIMARY KEY,
-	[Name]					VARCHAR(20),
-	Popularity				INT
 )
 
 CREATE TABLE UserLikes (
@@ -69,8 +76,9 @@ CREATE TABLE ArtworkRating (
 	PRIMARY KEY(ArtworkID, UserID)
 )
 GO
+--<------------------------------------------------------------------------------------------------------------------------------->--
 
-
+--<-----------------------------------------------------------(Sign Up)------------------------------------------------------------>--
 CREATE PROCEDURE signUp (
 
 	@firstName			VARCHAR(15),
@@ -80,29 +88,37 @@ CREATE PROCEDURE signUp (
 	@accountType		VARCHAR(6),
 	@gender				CHAR(1),
 	@password			NVARCHAR(64),
-	@email				VARCHAR(30)
+	@email				VARCHAR(30),
+	@out				INT					OUTPUT
 )
 AS 
 BEGIN
 
-	SELECT @password
-	DECLARE @hash CHAR(128) = HASHBYTES('SHA2_512', @password)
-	SELECT @hash
-	
-	INSERT INTO [User]
-	VALUES (
-		@firstName,
-		@lastName,
-		@DOB,
-		@address,
-		@accountType,
-		@gender,
-		@hash,
-		@email
-	)
+	SET @out = -1	--already exists
+	IF (NOT EXISTS (SELECT * FROM [User] WHERE Email = @email))
+	BEGIN
+		SELECT @password
+		DECLARE @hash CHAR(128) = HASHBYTES('SHA2_512', @password)
+		SELECT @hash
+		
+		INSERT INTO [User]
+		VALUES (
+			@firstName,
+			@lastName,
+			@DOB,
+			@address,
+			@accountType,
+			@gender,
+			@hash,
+			@email
+		)
+		SET @out = 0
+	END
 END
 GO
+--<-----------------------------------------------------------(Sign Up)------------------------------------------------------------>--
 
+--<-----------------------------------------------------------(Log In)------------------------------------------------------------->--
 CREATE PROCEDURE logOn (
 
 	@email				VARCHAR(MAX),
@@ -114,18 +130,20 @@ BEGIN
 	
 	SET @returnValue = 2	--wrong password
 	
-	IF NOT EXISTS(SELECT * FROM [User] WHERE [User].Email = @email)
+	IF (NOT EXISTS (SELECT * FROM [User] WHERE [User].Email = @email))
 	BEGIN
 		SET @returnValue = 1 --user does not exist
 	END
 
-	ELSE IF EXISTS(SELECT * FROM [User] WHERE [User].Email = @email AND [User].[Password] = HASHBYTES('SHA2_512', @password))
+	ELSE IF (EXISTS (SELECT * FROM [User] WHERE [User].Email = @email AND [User].[Password] = HASHBYTES('SHA2_512', @password)))
 	BEGIN
 		SET @returnValue =  0 --login
 	END
 END
 GO
+--<-----------------------------------------------------------(Log In)------------------------------------------------------------->--
 
+--<-----------------------------------------------------------(Add Art)------------------------------------------------------------>--
 CREATE PROCEDURE addArtwork (
 	@creator			VARCHAR(15),
 	@name				VARCHAR(15),
@@ -150,13 +168,15 @@ BEGIN
 		@link)
 END
 GO
+--<-----------------------------------------------------------(Add Art)------------------------------------------------------------>--
 
+--<----------------------------------------------------------(Rate Art)------------------------------------------------------------>--
 CREATE PROCEDURE rateArt (
 	@userID			INT,
 	@artID			INT, 
 	@rating			INT,
 	@additional		VARCHAR(30),
-	@out			INT			OUTPUT
+	@out			INT				OUTPUT
 )
 AS 
 BEGIN
@@ -173,8 +193,10 @@ BEGIN
 	END
 END
 GO
+--<----------------------------------------------------------(Rate Art)------------------------------------------------------------>--
 
-CREATE FUNCTION get_sim(
+--<-------------------------------------------------------(Get Similar Art)-------------------------------------------------------->--
+CREATE FUNCTION get_sim (
 	@origin VARCHAR(100), 
 	@id INT
 )
@@ -184,8 +206,9 @@ AS
 			FROM Artwork
 			WHERE Origin = @origin AND ArtworkID != @id)
 GO
-								
+--<-------------------------------------------------------(Get Similar Art)-------------------------------------------------------->--								
 
+--<----------------------------------------------------(Search Art by Origin)------------------------------------------------------>--
 CREATE FUNCTION searchArtOrigin(
 	@identifier VARCHAR(500)
 )
@@ -195,8 +218,9 @@ AS
 			FROM Artwork
 			WHERE Artwork.Origin = @identifier)
 GO
+--<----------------------------------------------------(Search Art by Origin)------------------------------------------------------>--
 
-
+--<-----------------------------------------------------(Search Art by Name)------------------------------------------------------->--
 CREATE FUNCTION searchArt(
 	@identifier VARCHAR(500)
 )
@@ -206,7 +230,9 @@ AS
 			FROM Artwork
 			WHERE Artwork.Name = @identifier)
 GO
+--<-----------------------------------------------------(Search Art by Name)------------------------------------------------------->--
 
+--<----------------------------------------------------(Send Mail on Purchase)----------------------------------------------------->--
 CREATE PROCEDURE send_mail(
 	@user_id INT,
 	@sub_type VARCHAR(30)
@@ -245,7 +271,9 @@ BEGIN
                         @body_format = 'TEXT'
 END
 GO
+--<----------------------------------------------------(Send Mail on Purchase)----------------------------------------------------->--
 
+--<----------------------------------------------------------(Like Art)------------------------------------------------------------>--
 CREATE PROCEDURE likeArt (
 	@userID		INT,
 	@artID		INT,
@@ -263,14 +291,20 @@ BEGIN
 	END
 END
 GO
+--<----------------------------------------------------------(Like Art)------------------------------------------------------------>--
 
+--<---------------------------------------------------------(Delete Art)----------------------------------------------------------->--
 CREATE PROCEDURE removeArt (
 	@artID		INT,
-	@out		INT			OUTPUT
+	@out		INT			OUTPUT,
+	@index		INT			OUTPUT
 )
 AS
 BEGIN
-	SET @out = -1	--already liked
+	SET @out = -1	--doesn't exist
+	SELECT @index = MIN(artworkID)
+	FROM Artwork
+
 	IF (EXISTS (SELECT * FROM Artwork WHERE artworkID = @artID))
 	BEGIN
 		DELETE Artwork
@@ -280,10 +314,12 @@ BEGIN
 	END
 END
 GO
+--<---------------------------------------------------------(Delete Art)----------------------------------------------------------->--
 
+--<----------------------------------------------------------(Sell Art)------------------------------------------------------------>--
 CREATE PROCEDURE sellArt (
 	@userID			INT,
-	@name			VARCHAR(15),
+	@name			VARCHAR(15),						--check in this procedure
 	@creator		VARCHAR(15),
 	@price			INT,
 	@date			DATE,
@@ -294,18 +330,19 @@ CREATE PROCEDURE sellArt (
 )
 AS
 BEGIN
-	EXEC addArtwork @name, @creator, @price, @date, @origin, @medium, @description, @link
+	EXEC addArtwork @creator, @name, @description, @medium, @origin, @date, @price, @link
 
 	DECLARE @artID	INT
-	SELECT TOP 1 @artID = artworkID
+	SELECT @artID = MAX(artworkID)
 	FROM Artwork
-	ORDER BY ArtworkID DESC
 
 	INSERT INTO UserArtworkSale
 	VALUES (@userID, @artID, CAST(GETDATE() AS DATE))
 END
 GO
+--<----------------------------------------------------------(Sell Art)------------------------------------------------------------>--
 
+--<--------------------------------------------------------(Purchase Art)---------------------------------------------------------->--
 CREATE PROCEDURE purchaseArt (
 	@userID			INT,
 	@sub_type		VARCHAR(30),
@@ -320,7 +357,9 @@ BEGIN
 	END
 END
 GO
+--<--------------------------------------------------------(Purchase Art)---------------------------------------------------------->--
 
+--<--------------------------------------------------------(Get liked Art)--------------------------------------------------------->--
 CREATE FUNCTION get_liked (
 	@userID		INT
 )
@@ -330,7 +369,9 @@ AS
 			 FROM UserLikes AS A JOIN Artwork AS B ON A.artID = B.ArtworkID
 			 WHERE A.userID = @userID)
 GO
+--<--------------------------------------------------------(Get liked Art)--------------------------------------------------------->--
 
+--<------------------------------------------------------(Get for sale Art)-------------------------------------------------------->--
 CREATE FUNCTION get_sale (
 	@userID		INT
 )
@@ -340,7 +381,9 @@ AS
 			 FROM UserArtworkSale AS A JOIN Artwork AS B ON A.artworkID = B.ArtworkID
 			 WHERE A.userID = @userID)
 GO
+--<------------------------------------------------------(Get for sale Art)-------------------------------------------------------->--
 
+--<------------------------------------------------------(Get purchased Art)------------------------------------------------------->--
 CREATE FUNCTION get_pur (
 	@userID		INT
 )
@@ -350,7 +393,103 @@ AS
 			 FROM UserArtworkPurchase AS A JOIN Artwork AS B ON A.artworkID = B.ArtworkID
 			 WHERE A.userID = @userID)
 GO
+--<------------------------------------------------------(Get purchased Art)------------------------------------------------------->--
 
+--<----------------------------------------------------(Check if owns art)--------------------------------------------------------->--
+CREATE PROCEDURE owns_art (
+	@userID		INT,
+	@artID		INT,
+	@out		INT			OUTPUT
+)
+AS
+BEGIN
+	SET @out = 0
+	IF (EXISTS (SELECT * FROM UserArtworkSale WHERE UserID = @userID AND ArtworkID = @artID))
+	BEGIN
+		SET @out = -1
+	END
+
+	IF (@out = 0)
+	BEGIN
+		IF (EXISTS (SELECT * FROM UserArtworkPurchase WHERE UserID = @userID AND ArtworkID = @artID))
+		BEGIN
+			SET @out = -1
+		END
+	END
+END
+GO
+--<----------------------------------------------------(Check if owns art)--------------------------------------------------------->--
+
+--<------------------------------------------------(Get avg rating of an artwork)-------------------------------------------------->--
+CREATE PROCEDURE avgRating (
+	@artID			INT, 
+	@out			float		OUTPUT
+)
+AS 
+BEGIN
+	
+	select @out = avg(rating)
+	from ArtworkRating
+	where ArtworkID = @artID
+	group by ArtworkID
+END
+GO
+--<------------------------------------------------(Get avg rating of an artwork)-------------------------------------------------->--
+
+--<--------------------------------------------------------(Remove user)----------------------------------------------------------->--
+CREATE PROCEDURE removeUser
+	@fname VARCHAR(500),
+	@lname VARCHAR(500)
+AS
+BEGIN 
+	DELETE FROM [User]
+	WHERE [User].FirstName = @fname AND [User].LastName = @lname
+END 
+GO
+--<--------------------------------------------------------(Remove user)----------------------------------------------------------->--
+
+--<--------------------------------------------------------(Add user)----------------------------------------------------------->--
+CREATE PROCEDURE makeAdmin
+	@fname VARCHAR(500),
+	@lname VARCHAR(500)
+AS
+BEGIN
+	UPDATE [User]
+	SET [User].AccountType = 'Admin'
+	WHERE [User].FirstName = @fname AND [User].LastName = @lname
+END
+GO
+--<--------------------------------------------------------(Add user)----------------------------------------------------------->--
+
+--<--------------------------------------------------------(Check if already bought)----------------------------------------------------------->--
+CREATE PROCEDURE checkPur (
+	@artID INT,
+	@out   INT		OUTPUT
+)
+AS
+BEGIN
+	SET @out = 0
+	IF (EXISTS (SELECT * FROM UserArtworkPurchase WHERE artworkID = @artID))
+	BEGIN
+		SET @out = -1
+	END
+END
+GO
+--<--------------------------------------------------------(Check if already bought)----------------------------------------------------------->--
+
+--<--------------------------------------------------------(Check if already bought)----------------------------------------------------------->--
+CREATE PROCEDURE countArt (
+	@out   INT		OUTPUT
+)
+AS
+BEGIN
+	SELECT @out = COUNT(artworkID)
+	FROM Artwork
+END
+GO
+--<--------------------------------------------------------(Check if already bought)----------------------------------------------------------->--
+
+--<----------------------------------------------(DATA INSERTION FROM A TXT FILE)-------------------------------------------------->--
 CREATE TABLE #T(ArtworkID				INT,
 				Creator					VARCHAR(200),
 				[Name]					VARCHAR(300),
@@ -362,7 +501,7 @@ CREATE TABLE #T(ArtworkID				INT,
 				pictureLink				VARCHAR(MAX))
 
 BULK INSERT #T
-FROM 'C:\Users\ather\Desktop\Test\Gallerie-d-Art\data.txt'
+FROM 'D:\final_proj\Gallerie-d-Art\art.txt'
 WITH (
 	ROWTERMINATOR = '\n',
 	FIELDTERMINATOR = '=!=!='
@@ -371,11 +510,7 @@ GO
 
 INSERT INTO Artwork(Creator, [Name], [Description], Medium, Origin, [Date], Price, pictureLink)
 SELECT Creator, [Name], [Description], Medium, Origin, [Date], Price, pictureLink FROM #T
-
+GO
+--<----------------------------------------------(DATA INSERTION FROM A TXT FILE)-------------------------------------------------->--
 
 -----------
-USE master
-GO
-
-DROP TABLE #T
-GO

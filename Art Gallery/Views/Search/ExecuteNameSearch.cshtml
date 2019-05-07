@@ -10,6 +10,9 @@
     int i = 1;
 }
 
+<link rel="stylesheet" type="text/css" href="~/Content/toastR/toastr.min.css" />
+<script src="~/Content/toastR/jQuery.min.js"></script>
+<script src="~/Content/toastR/toastr.min.js"></script>
 
 <!-- start page title section -->
 <section class="wow fadeIn parallax" data-stellar-background-ratio="0.5" style="background-image:url('../Content/images/paintings/second.jpg');">
@@ -73,7 +76,7 @@
                                             <div class="text-medium-gray text-extra-small margin-15px-bottom text-uppercase alt-font"><span>By @a.Creator</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span>@a.Origin</span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="#" class="text-medium-gray">@a.Date</a></div>
                                             <p class="no-margin width-95">@a.Description</p>
                                         </div>
-                                        <a class="btn btn-very-small btn-dark-gray text-uppercase" href='@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = @a.id })'>Explore Artwork</a>
+                                        <a class="btn btn-very-small btn-dark-gray text-uppercase" href='@Url.Action("DisplayArtworkPage", "DisplayArtwork", new { identifier = (@a.id +59)*123+10 })'>Explore Artwork</a>
                                     </div>
                                 </div>
                             </div>
@@ -86,3 +89,27 @@
     </div>
 </section>
 <!-- start section -->
+
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    $(document).ready(function notif() {
+        if("@ViewBag.Message.ToString()" != "")
+            toastr.error("@ViewBag.Message.ToString()");
+    });
+</script>
